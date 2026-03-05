@@ -2,11 +2,11 @@ import { Resend } from 'resend';
 import { env } from '../config/env';
 
 // Make sure to use environment variable
-const resend = new Resend(env.resendApiKey);
+const resend = env.resendApiKey ? new Resend(env.resendApiKey) : null;
 
 export const sendFineEmail = async (to: string, subject: string, html: string) => {
     try {
-        if (!env.resendApiKey) {
+        if (!resend) {
             console.warn('RESEND_API_KEY is not configured. Skipping email sending.');
             return null;
         }
