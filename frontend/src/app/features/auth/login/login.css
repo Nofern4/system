@@ -27,6 +27,7 @@
   justify-content: center;
   transition: background-color 0.8s ease;
   padding: 2rem;
+  padding-bottom: 4rem; /* space for footer */
 }
 
 .login-container {
@@ -198,10 +199,38 @@
   font-family: 'Cinzel', serif;
   font-weight: 700;
   letter-spacing: 0.3em;
-  text-transform: uppercase;
+}
+
+/* footer with sample credentials */
+.login-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.5rem 0;
+  background: var(--bg-color);
+  border-top: 1px solid var(--input-border);
+  text-align: center;
   font-size: 0.8rem;
-  cursor: pointer;
-  transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ensure footer contents stand out */
+.login-footer code {
+  background: var(--input-bg);
+  padding: 0 0.25rem;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  color: var(--text-main);
+}
+
+.login-footer code {
+  background: var(--input-bg);
+  padding: 0 0.25rem;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  color: var(--text-main);
 }
 
 .btn-submit:hover:not(:disabled) {
