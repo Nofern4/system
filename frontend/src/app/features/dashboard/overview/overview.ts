@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
 import { NgFor, NgIf, DatePipe } from '@angular/common'
 import { NotificationApiService } from '../../../services/notification-api.service'
 import { BookApiService } from '../../../services/book-api.service'
+import { AuthService } from '../../../core/auth.service'
 import { Notification } from '../../../models/notification.model'
 import { Book } from '../../../models/book.model'
 import { RouterLink } from '@angular/router'
@@ -21,6 +22,7 @@ export class DashboardOverviewComponent implements OnInit {
   featuredBooks: Book[] = []
   loading = false
   error = ''
+  isStaff = false
 
   newLoanUserId = ''
   newLoanBookId = ''
@@ -36,6 +38,7 @@ export class DashboardOverviewComponent implements OnInit {
     private bookApi: BookApiService,
     private loanApi: LoanApiService,
     private fineApi: FineApiService,
+    private auth: AuthService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -46,11 +49,22 @@ export class DashboardOverviewComponent implements OnInit {
   async load() {
     this.loading = true
     this.error = ''
+    this.cdr.detectChanges() // immediately reflect loading state
+
+    // determine role so we can show/hide staff quick actions
+    try {
+      const profile = await this.auth.getProfile()
+      this.isStaff = profile?.role === 'staff'
+    } catch {
+      this.isStaff = false
+    }
+    this.cdr.detectChanges()
 
     // Load Featured Books (Public)
     try {
       const bookRes = await this.bookApi.searchBooks({ limit: 4, sort: 'newest' })
       this.featuredBooks = bookRes.data
+      this.cdr.detectChanges()
     } catch (err) {
       console.error('Featured books load error:', err)
     }
@@ -59,6 +73,7 @@ export class DashboardOverviewComponent implements OnInit {
     try {
       const notifRes = await this.notificationApi.getMyNotifications()
       this.notifications = notifRes.data
+      this.cdr.detectChanges()
     } catch (err) {
       console.warn('Notifications load error (likely unauthorized):', err)
       this.notifications = []
